@@ -156,8 +156,6 @@ export default function HomePage() {
           ))}
         </div>
       </section>
-
-  
       {/* 3D Interaction Section */}
       <ThreeDCube />
 

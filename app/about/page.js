@@ -6,6 +6,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Sun, Heart, User, MessageSquare, Phone, Laptop, Lock, Star } from "lucide-react"; // More icons
 import HoverClickInteraction from "./HoverClickInteraction";
 
+
 gsap.registerPlugin(ScrollTrigger);
 
 export default function AboutPage() {
@@ -18,34 +19,93 @@ export default function AboutPage() {
   const hoverCardRefs = useRef([]);
 
   useEffect(() => {
-    // Title animation: Fade-in and slide-up
+    // Title animation: Fade-in and 3D rotation effect with motion blur
     gsap.fromTo(
       titleRef.current,
-      { opacity: 0, y: -100 },
-      { opacity: 1, y: 0, duration: 1.5, ease: "power4.out", delay: 0.5 }
+      {
+        opacity: 0,
+        y: -150,
+        rotationX: 90,
+        scale: 0.8,
+      },
+      {
+        opacity: 1,
+        y: 0,
+        rotationX: 0,
+        scale: 1,
+        duration: 2,
+        ease: "back.out(1.7)",
+        delay: 0.5,
+        motionBlur: true,
+      }
     );
 
-    // Paragraph animation: Fade-in and slide
+    // Paragraph animation: Slide from left and skew
     gsap.fromTo(
       paragraphRef.current,
-      { opacity: 0, x: -50 },
-      { opacity: 1, x: 0, duration: 1.5, delay: 1, ease: "power4.out" }
+      {
+        opacity: 0,
+        x: -150,
+        skewX: -20,
+      },
+      {
+        opacity: 1,
+        x: 0,
+        skewX: 0,
+        duration: 1.5,
+        delay: 1,
+        ease: "power4.out",
+      }
     );
 
-    // Icon animation: 3D rotation and staggered effect
-    gsap.fromTo(
-      iconRefs.current,
-      { opacity: 0, rotationX: -180 },
-      { opacity: 1, rotationX: 0, duration: 1.5, stagger: 0.2, ease: "back.out(1.7)", delay: 1.5 }
-    );
+    // Advanced icon animation: 3D flip with perspective
+    const iconTimeline = gsap.timeline({ delay: 1.5 });
+    iconTimeline
+      .fromTo(
+        iconRefs.current,
+        {
+          opacity: 0,
+          scale: 0,
+          rotationY: -360,
+          rotationX: 180,
+          perspective: 1000,
+        },
+        {
+          opacity: 1,
+          scale: 1.2,
+          rotationY: 0,
+          rotationX: 0,
+          duration: 1.2,
+          ease: "power2.out",
+          stagger: 0.1,
+        }
+      )
+      .to(
+        iconRefs.current,
+        {
+          scale: 1,
+          rotationY: 0,
+          rotationX: 0,
+          duration: 0.8,
+          ease: "elastic.out(1, 0.3)",
+          stagger: 0.1,
+        },
+        "+=0.3"
+      );
 
-    // Path animation with scroll trigger
+    // Path animation: Morph path and add easing
     gsap.fromTo(
       pathRef.current,
-      { strokeDasharray: pathRef.current.getTotalLength(), strokeDashoffset: pathRef.current.getTotalLength() },
+      {
+        strokeDasharray: pathRef.current.getTotalLength(),
+        strokeDashoffset: pathRef.current.getTotalLength(),
+        strokeWidth: 0,
+      },
       {
         strokeDashoffset: 0,
-        duration: 2.5,
+        strokeWidth: 2,
+        duration: 3,
+        ease: "power4.inOut",
         scrollTrigger: {
           trigger: pathRef.current,
           start: "top 70%",
@@ -55,13 +115,18 @@ export default function AboutPage() {
       }
     );
 
-    // Feature Cards Animation using GSAP Timeline
+    // Feature Cards Animation: Flip effect on scroll
     gsap.fromTo(
       featureCardsRef.current,
-      { opacity: 0, y: 100 },
+      {
+        opacity: 0,
+        rotationY: 180,
+        scale: 0.8,
+      },
       {
         opacity: 1,
-        y: 0,
+        rotationY: 0,
+        scale: 1,
         stagger: 0.3,
         duration: 1.5,
         scrollTrigger: {
@@ -72,21 +137,26 @@ export default function AboutPage() {
       }
     );
 
-    // Parallax effect on background
+    // Parallax effect with dynamic background movement
     gsap.to(".parallax-bg", {
       y: "50%",
+      x: "10%",
+      scale: 1.1,
       scrollTrigger: {
         trigger: ".parallax-section",
         start: "top top",
         end: "bottom bottom",
         scrub: true,
+        ease: "power1.inOut",
       },
     });
 
-    // Hover Effects for Cards
+    // Hover Effects for Cards with 3D scaling and rotation
     hoverCardRefs.current.forEach((card) => {
       gsap.to(card, {
         scale: 1.1,
+        rotationX: 20,
+        rotationY: 20,
         duration: 0.5,
         paused: true,
         ease: "back.out(1.7)",
@@ -98,7 +168,6 @@ export default function AboutPage() {
         },
       });
     });
-
   }, []);
 
   return (
@@ -162,7 +231,8 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <HoverClickInteraction/>
+      <HoverClickInteraction />
+
 
       {/* Hover/Click Interaction Section */}
       

@@ -24,3 +24,25 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+.icon-animation-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 30px;
+  transition: all 0.3s ease;
+}
+
+.icon-animation-section div {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #1f2937; /* Dark background for the icons */
+  border-radius: 50%; /* Circular container */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Soft shadow */
+  transition: all 0.3s ease-in-out;
+}
+
+.icon-animation-section div:hover {
+  transform: scale(1.1); /* Slight scale on hover */
+}
