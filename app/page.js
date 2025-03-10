@@ -1,101 +1,177 @@
-import Image from "next/image";
+"use client";
 
-export default function Home() {
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { Zap, Globe, BarChart, Sparkles } from "lucide-react";
+import ThreeDCube from "./ThreeDCube";
+
+gsap.registerPlugin(ScrollTrigger);
+
+export default function HomePage() {
+  const titleRef = useRef(null);
+  const subtitleRef = useRef(null);
+  const buttonsRef = useRef([]);
+  const iconRef = useRef(null);
+  const featuresRef = useRef(null);
+  const ctaButtonRef = useRef(null);
+  const exploreRef = useRef(null);
+
+  // Click handler for the "Get Started" button
+  const handleGetStarted = () => {
+    // Scroll to the section with id "features"
+    const targetSection = document.getElementById("features");
+    if (targetSection) {
+      targetSection.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  useEffect(() => {
+    // Fade-in for hero texts
+    gsap.fromTo(
+      titleRef.current,
+      { opacity: 0, y: -50 },
+      { opacity: 1, y: 0, duration: 1 }
+    );
+    gsap.fromTo(
+      subtitleRef.current,
+      { opacity: 0, y: 30 },
+      { opacity: 1, y: 0, duration: 1, delay: 0.3 }
+    );
+
+    // Staggered buttons animation
+    gsap.fromTo(
+      buttonsRef.current,
+      { opacity: 0, scale: 0.8 },
+      { opacity: 1, scale: 1, duration: 0.6, stagger: 0.2, ease: "power2.out", delay: 0.5 }
+    );
+
+    // Scroll-triggered icon reveal
+    gsap.fromTo(
+      iconRef.current,
+      { opacity: 0, scale: 0.5, rotate: -180 },
+      {
+        opacity: 1,
+        scale: 1,
+        rotate: 0,
+        duration: 1,
+        scrollTrigger: {
+          trigger: iconRef.current,
+          start: "top 80%",
+          toggleActions: "play none none reverse",
+        },
+      }
+    );
+
+    // Horizontal slide for features section
+    gsap.fromTo(
+      featuresRef.current,
+      { x: "-100vw" },
+      {
+        x: "0",
+        duration: 1.5,
+        scrollTrigger: {
+          trigger: featuresRef.current,
+          start: "top 90%",
+          toggleActions: "play none none reverse",
+        },
+      }
+    );
+
+    // Continuous rotation on CTA button (3D spin effect)
+    gsap.to(ctaButtonRef.current, {
+      rotation: 360,
+      repeat: -1,
+      duration: 4,
+      ease: "linear",
+    });
+
+    // Fade-in and scale for the Explore section on scroll
+    gsap.fromTo(
+      exploreRef.current,
+      { opacity: 0, scale: 0.8, y: 50 },
+      {
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        duration: 1.5,
+        scrollTrigger: {
+          trigger: exploreRef.current,
+          start: "top 80%",
+          toggleActions: "play none none reverse",
+        },
+      }
+    );
+  }, []);
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="bg-gray-900 text-white min-h-screen">
+      {/* Hero Section */}
+      <section className="h-screen flex flex-col justify-center items-center text-center px-6">
+        <h1 ref={titleRef} className="text-5xl font-bold">
+          Welcome to GSAP Magic
+        </h1>
+        <p ref={subtitleRef} className="text-lg text-gray-300 mt-3">
+          Experience smooth animations with GSAP
+        </p>
+        <div className="mt-6 flex space-x-4">
+          {["Get Started", "Learn More"].map((btn, index) => (
+            <button
+              key={index}
+              ref={(el) => (buttonsRef.current[index] = el)}
+              // Only the first button gets the click handler
+              onClick={index === 0 ? handleGetStarted : undefined}
+              className="px-6 py-2 bg-yellow-500 text-gray-900 font-semibold rounded-lg hover:bg-yellow-400 transition"
+            >
+              {btn}
+            </button>
+          ))}
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </section>
+
+      {/* Icon Section with Scroll Animation */}
+      <section className="py-20 flex justify-center">
+        <div ref={iconRef} className="p-6 bg-gray-800 rounded-lg shadow-lg flex space-x-10">
+          {[Zap, Globe, BarChart, Sparkles].map((Icon, index) => (
+            <Icon key={index} className="h-20 w-20 text-yellow-400" />
+          ))}
+        </div>
+      </section>
+
+      {/* Features Section with Slide Effect (target for "Get Started") */}
+      <section
+        id="features"
+        ref={featuresRef}
+        className="py-20 bg-gray-800 text-center"
+      >
+        <h2 className="text-3xl font-bold">Why Choose GSAP?</h2>
+        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6 px-6">
+          {["Fast", "Smooth", "Powerful"].map((feature, index) => (
+            <div key={index} className="bg-gray-700 p-6 rounded-lg shadow-md">
+              <h3 className="text-xl font-semibold">{feature}</h3>
+              <p className="text-gray-300 mt-2">
+                GSAP makes animations efficient and seamless.
+              </p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+  
+      {/* 3D Interaction Section */}
+      <ThreeDCube />
+
+      {/* Explore the Magic Section */}
+      <section
+        ref={exploreRef}
+        className="py-20 bg-gray-700 text-center px-6"
+      >
+        <h2 className="text-3xl font-bold mb-4">Explore the Magic</h2>
+        <p className="text-lg text-gray-300 max-w-2xl mx-auto">
+          Dive deeper into the world of animations with immersive interactions
+          and state-of-the-art 3D experiences crafted with GSAP.
+        </p>
+      </section>
     </div>
   );
 }
